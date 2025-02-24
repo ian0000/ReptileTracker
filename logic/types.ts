@@ -16,3 +16,9 @@ export class User {
     };
   }
 }
+export class Reptile {
+ static fronFirestore(data:any):
+ 
+
+
+}
