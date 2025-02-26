@@ -1,7 +1,7 @@
 import { View, StyleSheet, Alert } from "react-native";
 import { Button, Card, Text, TextInput } from "react-native-paper";
 import { useCallback, useState } from "react";
-import { addUser, getUsers } from "@/logic/firestore";
+import { addUser, getUsers } from "@/logic/userControl";
 import { IUser } from "@/logic/types";
 
 interface FormState extends IUser {
@@ -41,6 +41,7 @@ export default function SignIn() {
   };
   const createNewUser = async () => {
     try {
+      console.log(state);
       if (!validateForm()) {
         return;
       }
@@ -50,6 +51,10 @@ export default function SignIn() {
         creationDate: new Date().toISOString(),
         password: state.password,
       });
+      Alert.alert(newUserID.message);
+      if (newUserID.status == 0) {
+        return;
+      }
       setState({
         name: "",
         email: "",
@@ -58,7 +63,6 @@ export default function SignIn() {
         password2: "",
       });
       fetchUsers;
-      console.log("User added with ID:", newUserID);
     } catch (error) {
       console.log(error);
     }
@@ -78,24 +82,30 @@ export default function SignIn() {
             label="User"
             placeholder="User"
             style={styles.text}
+            value={state.name}
             onChange={(value) => handleChangeText("name", value.nativeEvent.text)}
           ></TextInput>
           <TextInput
             label="Email"
             placeholder="Email"
             style={styles.text}
+            value={state.email}
             onChange={(value) => handleChangeText("email", value.nativeEvent.text)}
           ></TextInput>
           <TextInput
             label="Password"
             placeholder="Password"
             style={styles.text}
+            value={state.password}
+            secureTextEntry={true}
             onChange={(value) => handleChangeText("password", value.nativeEvent.text)}
           ></TextInput>
           <TextInput
             label="Password2"
             placeholder="Password2"
             style={styles.text}
+            value={state.password2}
+            secureTextEntry={true}
             onChange={(value) => handleChangeText("password2", value.nativeEvent.text)}
           ></TextInput>
           <Button onPress={() => createNewUser()}>Save</Button>
@@ -112,9 +122,15 @@ var styles = StyleSheet.create({
     backgroundColor: "#25292e",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
   text: {
     color: "#fff",
+    fontSize: 20,
+    marginBottom: 10,
+    minWidth: 300,
+    maxWidth: 300,
   },
   button: {
     fontSize: 20,
