@@ -1,8 +1,9 @@
-import { Text, View, StyleSheet, KeyboardAvoidingView, Button, TextInput } from "react-native";
+import { Text, View, StyleSheet, KeyboardAvoidingView, Pressable, Alert } from "react-native";
 import { useState } from "react";
 import { auth } from "@/database/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { router } from "expo-router";
+import { Button, TextInput } from "react-native-paper";
 
 export default function Index() {
   const [email, setEmail] = useState("");
@@ -10,15 +11,16 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const signUp = async () => {
     setLoading(true);
+    setLoading(false);
   };
   const signIn = async () => {
     setLoading(true);
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Signed in successfully!");
-      router.push("/about");
+      Alert.alert("Signed in successfully!");
     } catch (error) {
+      Alert.alert(error + "");
       console.log(error);
     }
     setLoading(false);
@@ -36,22 +38,58 @@ export default function Index() {
     <View>
       <KeyboardAvoidingView behavior="padding">
         <TextInput
+          label="Email"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
-          placeholder="email"
+          placeholder="Email"
+          style={style.input}
         ></TextInput>
-        <TextInput value={password} onChangeText={setPassword} placeholder="password"></TextInput>
+        <TextInput
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+          style={style.input}
+        ></TextInput>
         {loading ? (
           <Text>Loading...</Text>
         ) : (
-          <>
-            <Button onPress={signUp} title="Login" />
-            <Button onPress={signIn} title="Sign Up" />
-          </>
+          <View style={style.div}>
+            <Button icon="" mode="contained" style={style.button} onPress={signIn}>
+              Login
+            </Button>
+            <Button icon="" mode="contained" style={style.button} onPress={signUp}>
+              Sign Up
+            </Button>
+          </View>
         )}
       </KeyboardAvoidingView>
     </View>
   );
 }
+
+const style = StyleSheet.create({
+  input: {
+    height: 20,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+    borderWidth: 1,
+    padding: 10,
+  },
+  button: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    alignContent: "center",
+    alignItems: "center",
+    minWidth: 200,
+  },
+  div: {
+    alignItems: "center",
+    alignContent: "center",
+    alignSelf: "center",
+  },
+});
