@@ -2,7 +2,6 @@ import { collection, doc, CollectionReference } from "firebase/firestore";
 import { IUser } from "./types";
 import { db } from "@/database/firebase";
 import { addDocFB, deleteDocFB, getDocFB, getDocsFB, updateDocFB } from "./fbCommon";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const USERS_COLLECTION = "users"; // Firestore collection name
 
@@ -11,7 +10,7 @@ export const getUsers = async (): Promise<IUser[]> => {
 };
 
 export const addUser = async (
-  user: Omit<IUser, "id">
+  user: Omit<IUser, "id" | "password">
 ): Promise<{ status: number; message: string; id?: string }> => {
   var exist = false;
   const users = await getUsers();

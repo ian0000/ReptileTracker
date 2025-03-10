@@ -13,7 +13,7 @@ export class ReptileTracker {
     return getDocsFB<Reptile>(collection(db, REPLTILES_COLLECTION));
   };
   updateReptile = async (reptileId: string, updates: Partial<Omit<Reptile, "id">>) => {
-    return updateDocFB(collection(db, REPLTILES_COLLECTION), updates);
+    return updateDocFB(collection(db, REPLTILES_COLLECTION), reptileId, updates);
   };
   deleteReptile = async (reptileId: string) => {
     return deleteDocFB(collection(db, REPLTILES_COLLECTION), reptileId);
