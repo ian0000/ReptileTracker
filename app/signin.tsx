@@ -1,10 +1,11 @@
-import { View, StyleSheet, Alert, Text, TextInput, Button, Pressable } from "react-native";
+import { View, StyleSheet, Alert, KeyboardAvoidingView } from "react-native";
 
 import { useCallback, useState } from "react";
 import { addUser, getUsers } from "@/logic/userControl";
 import { IUser } from "@/logic/types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/database/firebase";
+import { Avatar, Button, Card, Text, TextInput } from "react-native-paper";
 
 interface FormState extends IUser {
   password2: string;
@@ -17,6 +18,8 @@ export default function SignIn() {
     creationDate: "",
     password: "",
     password2: "",
+    referenceID: "",
+    status: 0,
   });
 
   const handleChangeText = useCallback((name: keyof Omit<FormState, "id">, value: string) => {
@@ -52,17 +55,11 @@ export default function SignIn() {
           // Signed in
           // var user = userCredential.user;
           // ...
-
-          console.log(userCredential);
-          console.log("User created");
+          Alert.alert("Success", "User created");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode);
-          Alert.alert(errorMessage);
+          Alert.alert(handleFireBaseError(error.code));
         });
-      console.log(res);
       if (res == undefined) {
         return;
       }
@@ -70,6 +67,8 @@ export default function SignIn() {
         name: state.name,
         email: state.email,
         creationDate: new Date().toISOString(),
+        referenceID: state.referenceID,
+        status: state.status,
       });
       Alert.alert(newUserID.message);
       if (newUserID.status == 0) {
@@ -81,6 +80,8 @@ export default function SignIn() {
         creationDate: "",
         password: "",
         password2: "",
+        referenceID: "",
+        status: 1,
       });
       fetchUsers;
     } catch (error) {
@@ -94,69 +95,108 @@ export default function SignIn() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Sign In</Text>
-      <View>
-        <TextInput
-          placeholder="User"
-          style={styles.text}
-          value={state.name}
-          onChange={(value) => handleChangeText("name", value.nativeEvent.text)}
-        ></TextInput>
-        <TextInput
-          placeholder="Email"
-          style={styles.text}
-          value={state.email}
-          onChange={(value) => handleChangeText("email", value.nativeEvent.text)}
-        ></TextInput>
-        <TextInput
-          placeholder="Password"
-          style={styles.text}
-          value={state.password}
-          secureTextEntry={true}
-          onChange={(value) => handleChangeText("password", value.nativeEvent.text)}
-        ></TextInput>
-        <TextInput
-          placeholder="Password2"
-          style={styles.text}
-          value={state.password2}
-          secureTextEntry={true}
-          onChange={(value) => handleChangeText("password2", value.nativeEvent.text)}
-        ></TextInput>
-        <Pressable onPress={() => createNewUser()}>
-          <Text style={styles.buttonText}>Save</Text>
-        </Pressable>
-        <Pressable onPress={() => fetchUsers()}>
-          <Text style={styles.buttonText}>Get</Text>
-        </Pressable>
-      </View>
+    <View>
+      <Card>
+        <Card.Content>
+          <Text variant="titleLarge">SignIn</Text>
+          <Avatar.Icon style={[styles.mainicon]} size={200} icon={"account-settings"}></Avatar.Icon>
+        </Card.Content>
+        <Card.Content>
+          <TextInput
+            placeholder="User"
+            style={styles.input}
+            value={state.name}
+            onChange={(value) => handleChangeText("name", value.nativeEvent.text)}
+          ></TextInput>
+          <TextInput
+            placeholder="Email"
+            style={styles.input}
+            value={state.email}
+            onChange={(value) => handleChangeText("email", value.nativeEvent.text)}
+          ></TextInput>
+          <TextInput
+            placeholder="Password"
+            style={styles.input}
+            value={state.password}
+            secureTextEntry={true}
+            onChange={(value) => handleChangeText("password", value.nativeEvent.text)}
+          ></TextInput>
+          <TextInput
+            placeholder="Password2"
+            style={styles.input}
+            value={state.password2}
+            secureTextEntry={true}
+            onChange={(value) => handleChangeText("password2", value.nativeEvent.text)}
+          ></TextInput>
+        </Card.Content>
+        <Card.Actions style={styles.div}>
+          <Button
+            icon="account"
+            mode="contained"
+            style={styles.button}
+            onPress={() => createNewUser()}
+          >
+            Save
+          </Button>
+          <Button
+            icon="account"
+            mode="contained"
+            style={styles.button}
+            onPress={() => fetchUsers()}
+          >
+            Get
+          </Button>
+        </Card.Actions>
+      </Card>
     </View>
   );
 }
 
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#25292e",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-  text: {
-    color: "#fff",
-    fontSize: 20,
-    marginBottom: 10,
-    minWidth: 300,
-    maxWidth: 300,
+const styles = StyleSheet.create({
+  input: {
+    height: 20,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+    borderWidth: 1,
   },
   button: {
-    fontSize: 20,
-    textDecorationLine: "underline",
-    color: "#fff",
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    alignContent: "center",
+    alignItems: "center",
+    minWidth: 100,
   },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
+  div: {
+    alignItems: "center",
+    alignContent: "center",
+    alignSelf: "center",
+  },
+  mainicon: {
+    alignItems: "center",
+    alignContent: "center",
+    alignSelf: "center",
   },
 });
+
+export const handleFireBaseError = (code: string) => {
+  switch (code) {
+    case "auth/invalid-email":
+      return "Invalid email format. Please enter a valid email.";
+    case "auth/user-not-found":
+      return "No account found with this email.";
+    case "auth/wrong-password":
+      return "Incorrect password. Please try again.";
+    case "auth/email-already-in-use":
+      return "This email is already in use. Try logging in.";
+    case "auth/weak-password":
+      return "Password should be at least 6 characters long.";
+    case "auth/network-request-failed":
+      return "Network error. Check your internet connection.";
+    case "auth/invalid-credential":
+      return "Wrong credentials.";
+    default:
+      return "An unknown error occurred. Please try again.";
+  }
+};

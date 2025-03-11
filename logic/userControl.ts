@@ -36,7 +36,7 @@ export const addUser = async (
 export const updateUser = async (userId: string, updates: Partial<Omit<IUser, "id">>) => {
   return updateDocFB(doc(db, USERS_COLLECTION, userId) as any, userId, updates);
 };
-
+//todo: change this to only update status
 export const deleteUser = async (userId: string) => {
   return deleteDocFB(doc(db, USERS_COLLECTION, userId) as any, userId);
 };

@@ -38,5 +38,6 @@ yarn-error.*
 # Ignore firebase configuration
 firebase.ts
 database/firebase.ts
-
+google-services.json
+GoogleService-Info.plist
 app-example

@@ -4,11 +4,10 @@ import { PaperProvider } from "react-native-paper";
 export default function RootLayout() {
   return (
     <PaperProvider>
-      <Tabs>
-        <Tabs.Screen name="index" />
-        <Tabs.Screen name="signin" />
-        <Tabs.Screen name="(about)" />
-      </Tabs>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index"></Stack.Screen>
+        <Stack.Screen name="signin"></Stack.Screen>
+      </Stack>
     </PaperProvider>
   );
 }

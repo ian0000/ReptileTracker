@@ -4,6 +4,8 @@ export interface IUser {
   email: string;
   creationDate: string;
   password: string;
+  referenceID: string;
+  status: number;
 }
 
 export class User {
@@ -13,6 +15,8 @@ export class User {
       name: data.name,
       email: data.email,
       creationDate: data.creationDate,
+      referenceID: data.referenceID,
+      status: data.status,
     };
   }
 }
@@ -41,7 +45,7 @@ export class Reptile {
       birthDate: data.birthDate,
       age: data.age,
       tag: data.tag,
-      parent1Id: data.parent1Id,
+      parent1Id: data.parent1Id, //can this be null?
       parent2Id: data.parent2Id,
       creationDate: data.creationDate,
       userId: data.userId,
@@ -57,7 +61,7 @@ export interface ISpecies {
   name: string;
   description: string;
   creationDate: string;
-  userId: string;
+  state: number;
 }
 
 export class Species {
@@ -66,7 +70,7 @@ export class Species {
       name: data.name,
       description: data.description,
       creationDate: data.creationDate,
-      userId: data.userId,
+      state: data.state,
     };
   }
 }
