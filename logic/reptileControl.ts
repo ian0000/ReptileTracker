@@ -1,6 +1,6 @@
-import { collection } from "firebase/firestore";
+import { collection, CollectionReference, doc, setDoc } from "firebase/firestore";
 import { addDocFB, deleteDocFB, getDocFB, getDocsFB, updateDocFB } from "./fbCommon";
-import { Reptile, Species } from "./types";
+import { ISpecies, Reptile, Species } from "./types";
 import { db } from "@/database/firebase";
 
 const REPTILES_COLLECTION = "reptiles";
@@ -26,12 +26,24 @@ export class ReptileTracker {
 const SPECIES_COLLECTION = "species";
 
 export class SpeciesManager {
-  addSpecies = async (specie: Species): Promise<string> => {
-    return addDocFB(collection(db, SPECIES_COLLECTION), specie);
+  addSpecies = async (
+    specie: ISpecies
+  ): Promise<{ status: number; message: string; id?: string }> => {
+    const docRef = doc(collection(db, SPECIES_COLLECTION));
+
+    console.log("das" + docRef.id);
+    specie.id = docRef.id;
+    await setDoc(docRef, specie);
+    return {
+      status: 1,
+      message: "Species added successfully",
+      id: docRef.id,
+    };
   };
-  getSpecies = async (): Promise<Species[]> => {
-    return getDocsFB<Species>(collection(db, SPECIES_COLLECTION));
+  getSpecies = async (): Promise<(ISpecies & { id: string })[]> => {
+    return getDocsFB<ISpecies>(collection(db, SPECIES_COLLECTION) as CollectionReference<ISpecies>);
   };
+
   updateSpecies = async (speciesId: string, updates: Species) => {
     return updateDocFB(collection(db, SPECIES_COLLECTION), speciesId, updates);
   };

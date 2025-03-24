@@ -1,4 +1,4 @@
-import { View, StyleSheet, Alert, KeyboardAvoidingView } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 
 import { useCallback, useState } from "react";
 import { addUser, getUsers } from "@/logic/userControl";
@@ -46,7 +46,6 @@ export default function SignIn() {
   };
   const createNewUser = async () => {
     try {
-      console.log(state);
       if (!validateForm()) {
         return;
       }
@@ -103,18 +102,21 @@ export default function SignIn() {
         </Card.Content>
         <Card.Content>
           <TextInput
+            label="User"
             placeholder="User"
             style={styles.input}
             value={state.name}
             onChange={(value) => handleChangeText("name", value.nativeEvent.text)}
           ></TextInput>
           <TextInput
+            label="Email"
             placeholder="Email"
             style={styles.input}
             value={state.email}
             onChange={(value) => handleChangeText("email", value.nativeEvent.text)}
           ></TextInput>
           <TextInput
+            label="Password"
             placeholder="Password"
             style={styles.input}
             value={state.password}
@@ -122,6 +124,7 @@ export default function SignIn() {
             onChange={(value) => handleChangeText("password", value.nativeEvent.text)}
           ></TextInput>
           <TextInput
+            label="Repeat Password"
             placeholder="Password2"
             style={styles.input}
             value={state.password2}

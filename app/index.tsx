@@ -1,22 +1,44 @@
-import { View, StyleSheet, KeyboardAvoidingView, Pressable, Alert } from "react-native";
-import { useState } from "react";
+import { View, StyleSheet, KeyboardAvoidingView, Pressable, Alert, Keyboard } from "react-native";
+import { useEffect, useState } from "react";
 import { auth } from "@/database/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
-import { Avatar, Button, Card, Text, TextInput } from "react-native-paper";
-import { navigate } from "expo-router/build/global-state/routing";
+import { Appbar, Avatar, Button, Card, Text, TextInput } from "react-native-paper";
 import { handleFireBaseError } from "./signin";
 
+export const MyHeader = () => {
+  return (
+    <Appbar.Header>
+      <Appbar.Content title="title"></Appbar.Content>
+    </Appbar.Header>
+  );
+};
+
 export default function Index() {
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => setIsKeyboardOpen(true));
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () =>
+      setIsKeyboardOpen(false)
+    );
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   const signUp = async () => {
     setLoading(true);
     router.push("/signin");
     setLoading(false);
   };
+
   const signIn = async () => {
     setLoading(true);
 
@@ -36,11 +58,16 @@ export default function Index() {
 
   return (
     <View style={{ flex: 1 }}>
+      <MyHeader />
       <KeyboardAvoidingView behavior="padding">
         <Card>
           <Card.Content>
             <Text variant="titleLarge">Login</Text>
-            <Avatar.Icon style={[styles.mainicon]} size={250} icon={"youtube-gaming"}></Avatar.Icon>
+            <Avatar.Icon
+              style={styles.mainicon}
+              size={isKeyboardOpen ? 100 : 250}
+              icon={"youtube-gaming"}
+            />
           </Card.Content>
           <Card.Content>
             <TextInput

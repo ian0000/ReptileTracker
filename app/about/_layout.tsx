@@ -4,9 +4,9 @@ import { PaperProvider } from "react-native-paper";
 export default function SigninLayout() {
   return (
     <PaperProvider>
-      <Tabs>
-        <Tabs.Screen name="about" />
-      </Tabs>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="about"></Stack.Screen>
+      </Stack>
     </PaperProvider>
   );
 }
