@@ -134,12 +134,14 @@ export default function AboutScreen() {
           <DataTable.Header>
             <DataTable.Title>ID</DataTable.Title>
             <DataTable.Title>Specie</DataTable.Title>
+            <DataTable.Title>Description</DataTable.Title>
           </DataTable.Header>
           {specieList.length > 0 ? (
             specieList.map((species) => (
               <DataTable.Row key={species.id}>
                 <DataTable.Cell>{species.id}</DataTable.Cell>
                 <DataTable.Cell>{species.name}</DataTable.Cell>
+                <DataTable.Cell>{species.description}</DataTable.Cell>
               </DataTable.Row>
             ))
           ) : (
